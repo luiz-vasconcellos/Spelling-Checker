@@ -43,14 +43,15 @@ int init_dict() {
 
         /* We can allocate it all at once if the program
            needs to run faster */
-        pp_words[i] = malloc(len * sizeof *pp_words[i]);
+        size_t line_len = strlen(line);
+        pp_words[i] = malloc(line_len * sizeof *pp_words[i]);
         if(!pp_words[i]) {
-            fprintf(stderr, "Falha ao alocar memória para a %i-esima linha do dicionario", i);
+            fprintf(stderr, "Falha ao alocar memoria para a %i-esima linha do dicionario", i);
             return -1;
         }
 
+        line[line_len-1] = '\0';
         strcpy(pp_words[i], line);
-        pp_words[i][len-2] = '\0';
     }
 
     fclose(dict);
@@ -75,7 +76,7 @@ int b_search(char *str, int a, int b) {
 
     int mid = (a + b) / 2;
     int cmp = strcmp(str, pp_words[mid]);
-    // printf("%s\n", pp_words[mid]);
+
     if(cmp == 0)
         return 1;
     else if(cmp < 0)
