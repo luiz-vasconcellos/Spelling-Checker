@@ -1,3 +1,3 @@
 run:
 	gcc -Wall ortografia.c dicionario.c -o ortografia
-	./ortografia
+	./ortografia < t.txt
