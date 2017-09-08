@@ -38,11 +38,11 @@ int main () {
     	for (int i = 0; word[i]; ++i)
     		lower_word[i] = tolower(word[i]);
 
-    	if(!check_word(lower_word))
-    		printf("[%s]",word);
-    	else
-    		printf("%s", word);
-
+   		if(!check_word(lower_word) &&  c != EOF)
+   			printf("[%s]",word);
+   		else
+   			printf("%s", word);	
+    	
     	if(c != EOF)
     		printf("%c", c);
     }
