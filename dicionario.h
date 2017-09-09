@@ -16,4 +16,7 @@ void deinit_dict();
 /* Return 1 if word is in dictionary, 0 otherwise. */
 int check_word(char *str);
 
+int is_br_alpha(char c);
+char to_br_lower(char c);
+
 #endif

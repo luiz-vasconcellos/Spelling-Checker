@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "dicionario.h"
 
 #define DICT_PATH "/usr/share/dict/brazilian"
@@ -83,4 +84,20 @@ int b_search(char *str, int a, int b) {
         return b_search(str, a, mid);
     else
         return b_search(str, mid+1, b);
+}
+
+int is_br_alpha(char c) {
+    c = tolower(c);
+    if (c >= 'a' && c <= 'z')
+        return 1;
+    if (c > -65 && c < 0)
+        return 1;
+
+    return 0;
+}
+
+char to_br_lower(char c) {
+    if(c > -65 && c < -36)
+        return c + 32;
+    else return tolower(c);
 }
