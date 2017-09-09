@@ -1,3 +1,6 @@
+# Luiz Fernando Azevedo Vasconcellos GRR20171629
+# lfav17@inf.ufpr.br
+
 CC=gcc
 CFLAGS=-Wall
 
