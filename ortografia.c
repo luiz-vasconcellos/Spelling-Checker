@@ -30,7 +30,7 @@ int main () {
         for (int i = 0; word[i]; ++i)
             lower_word[i] = to_br_lower(word[i]);
 
-        if(!check_word(lower_word) &&  c != EOF)
+        if(!(check_word(lower_word) || check_word(word)) &&  c != EOF)
             printf("[%s]",word);
         else
             printf("%s", word);	
