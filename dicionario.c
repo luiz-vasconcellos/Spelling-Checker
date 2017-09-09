@@ -51,6 +51,8 @@ int init_dict() {
             return -1;
         }
 
+        /* getline reads 120 characters,
+           here we cut after the last meaningful one */
         line[line_len-1] = '\0';
         strcpy(pp_words[i], line);
     }
@@ -59,20 +61,27 @@ int init_dict() {
     return 0;
 }
 
+/*
+    Free every char* string and then
+    free the array of chars
+*/
 void deinit_dict() {
     for(int i=0; i < i_nwords; ++i)
         free(pp_words[i]);
     free(pp_words);
-    pp_words = 0;
+
+    pp_words = NULL; // Good practices
 }
 
+// Just an API for programmers
 int check_word(char *str) {
     return b_search(str, 0, i_nwords-1);
     return 0;
 }
 
+// Basic binary search
 int b_search(char *str, int a, int b) {
-    if(a == b)
+    if(a >= b)
         return (strcmp(str, pp_words[a]) == 0);
 
     int mid = (a + b) / 2;
@@ -86,6 +95,11 @@ int b_search(char *str, int a, int b) {
         return b_search(str, mid+1, b);
 }
 
+/*
+    Function that gives a rough idea for alpha
+    characters in the extended ASCII table; may
+    have false positives
+*/
 int is_br_alpha(char c) {
     c = tolower(c);
     if (c >= 'a' && c <= 'z')
@@ -96,6 +110,7 @@ int is_br_alpha(char c) {
     return 0;
 }
 
+// Return lowercase for extended ASCII table
 char to_br_lower(char c) {
     if(c > -65 && c < -36)
         return c + 32;
