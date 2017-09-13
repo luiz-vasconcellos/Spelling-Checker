@@ -14,13 +14,13 @@ char **pp_words = 0;
 // Number of words in dict
 int i_nwords = 0;
 
-// Basic binary search algorithm
-int b_search(char *, int, int);
+// Comp function
+int comp(const void *a, const void *b);
 
 int init_dict() {
     // Open file and check its results
     FILE *dict = fopen(DICT_PATH, "r");
-    if(!dict) {
+    if( !dict ) {
         fprintf(stderr, "Falha ao abrir o dicionario\n");
         return -1;
     }
@@ -32,31 +32,36 @@ int init_dict() {
     while(getline(&line, &len, dict) != -1) i_nwords++;
 
     pp_words = malloc(i_nwords * sizeof *pp_words);
-    if(!pp_words) {
+    if( !pp_words ) {
         fprintf(stderr, "Falha ao alocar memoria para dicionario\n");
         return -1;
     }
     
     // Now read the words for real
     rewind(dict);
-    for(int i=0; i < i_nwords; ++i) {
+    for( int i=0; i < i_nwords; ++i ) {
         getline(&line, &len, dict); // with trailing \n
 
         /* We can allocate it all at once if the program
            needs to run faster */
         size_t line_len = strlen(line);
         pp_words[i] = malloc(line_len * sizeof *pp_words[i]);
-        if(!pp_words[i]) {
+        if( !pp_words[i] ) {
             fprintf(stderr, "Falha ao alocar memoria para a %i-esima linha do dicionario", i);
             return -1;
         }
 
-        /* getline reads 120 characters,
-           here we cut after the last meaningful one */
+        /* 
+           getline reads 120 characters, here we cut after the last 
+           meaningful one and use the lower case version
+        */
         line[line_len-1] = '\0';
+        line[0] = to_br_lower(line[0]);
         strcpy(pp_words[i], line);
     }
 
+    // Need to sorct dict after transforming all to lower case
+    qsort(pp_words, i_nwords, sizeof(char*), comp);
     fclose(dict);
     return 0;
 }
@@ -66,7 +71,7 @@ int init_dict() {
     free the array of chars
 */
 void deinit_dict() {
-    for(int i=0; i < i_nwords; ++i)
+    for( int i=0; i < i_nwords; ++i )
         free(pp_words[i]);
     free(pp_words);
 
@@ -74,33 +79,24 @@ void deinit_dict() {
 }
 
 // Just an API for programmers
-int check_word(char *str) {
-    return b_search(str, 0, i_nwords-1);
-    return 0;
+int check_word( char *str ) {
+    char *res = bsearch(&str, pp_words, i_nwords, sizeof(char*), comp);
+    return (res != NULL);
 }
 
-// Basic binary search
-int b_search(char *str, int a, int b) {
-    if(a >= b)
-        return (strcmp(str, pp_words[a]) == 0);
+int comp(const void *a, const void *b)  { 
+    const char **ia = (const char **)a;
+    const char **ib = (const char **)b;
+    return strcmp(*ia, *ib);
+} 
 
-    int mid = (a + b) / 2;
-    int cmp = strcmp(str, pp_words[mid]);
-
-    if(cmp == 0)
-        return 1;
-    else if(cmp < 0)
-        return b_search(str, a, mid);
-    else
-        return b_search(str, mid+1, b);
-}
 
 /*
     Function that gives a rough idea for alpha
     characters in the extended ASCII table; may
     have false positives
 */
-int is_br_alpha(char c) {
+int is_br_alpha( char c ) {
     c = tolower(c);
     if (c >= 'a' && c <= 'z')
         return 1;
@@ -111,8 +107,9 @@ int is_br_alpha(char c) {
 }
 
 // Return lowercase for extended ASCII table
-char to_br_lower(char c) {
-    if(c > -65 && c < -36)
+char to_br_lower( char c ) {
+    if( c > -65 && c < -36 )
         return c + 32;
-    else return tolower(c);
+    else
+        return tolower(c);
 }
