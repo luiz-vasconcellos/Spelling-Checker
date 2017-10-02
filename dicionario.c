@@ -10,11 +10,10 @@
 #define DICT_PATH "/usr/share/dict/brazilian"
 
 // Array of C-strings that will hold dict in memory
-char **pp_words = 0;
+static char **pp_words = 0;
 // Number of words in dict
-int i_nwords = 0;
+static int i_nwords = 0;
 
-// Comp function
 int comp(const void *a, const void *b);
 
 int init_dict() {
@@ -60,8 +59,10 @@ int init_dict() {
         strcpy(pp_words[i], line);
     }
 
-    // Need to sorct dict after transforming all to lower case
+    // Need to sort dict after transforming all to lower case
     qsort(pp_words, i_nwords, sizeof(char*), comp);
+
+    // Close file and return
     fclose(dict);
     return 0;
 }
@@ -84,6 +85,7 @@ int check_word( char *str ) {
     return (res != NULL);
 }
 
+// Comp function for sorting
 int comp(const void *a, const void *b)  { 
     const char **ia = (const char **)a;
     const char **ib = (const char **)b;

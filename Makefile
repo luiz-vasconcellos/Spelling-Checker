@@ -1,17 +1,16 @@
 # Luiz Fernando Azevedo Vasconcellos GRR20171629
 # lfav17@inf.ufpr.br
 
-CC=gcc
-CFLAGS=-Wall
+CC = gcc
+CFLAGS = -Wall
 
-all: ortografia.o dicionario.o
-	$(CC) ortografia.o dicionario.o -o ortografia $(CFLAGS)
+OBJS = ortografia.o dicionario.o
 
-ortografia.o: ortografia.c dicionario.h
-	$(CC) -c ortografia.c $(CFLAGS)
+all: $(OBJS)
+	$(CC) $(CFLAGS) -o ortografia $(OBJS) 
 
-dicionario.o: dicionario.c dicionario.h
-	$(CC) -c dicionario.c $(CFLAGS)
+%.o : %.c dicionario.h
+	$(CC) -c $< $(CFLAGS)
 
 clean:
 	-rm -f *.o
